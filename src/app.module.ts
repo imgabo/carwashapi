@@ -13,10 +13,13 @@ import { EmpresasService } from './dashboard/empresas/empresas.service';
 import { SucursalesModule } from './dashboard/sucursales/sucursales.module';
 import { VentaModule } from './dashboard/venta/venta.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST,
@@ -25,7 +28,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [join(__dirname, '**', '*.entity.{ts,js}')],
-      synchronize: true,
+      synchronize: process.env.NODE_ENV !== 'production',
       logging: false
     }),
     LoginModule,
@@ -36,7 +39,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     VentaModule,
     DashboardModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
 export class AppModule {}
