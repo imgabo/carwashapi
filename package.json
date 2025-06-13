@@ -23,7 +23,9 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm migration:generate -- -d typeorm.config.ts",
     "migration:run": "npm run typeorm migration:run -- -d typeorm.config.ts",
-    "migration:revert": "npm run typeorm migration:revert -- -d typeorm.config.ts"
+    "migration:revert": "npm run typeorm migration:revert -- -d typeorm.config.ts",
+    "db:create": "node -e \"require('./dist/scripts/create-tables.js')\"",
+    "db:seed": "node -e \"require('./dist/scripts/seed-data.js')\""
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",

@@ -28,7 +28,8 @@ import { HealthController } from './health/health.controller';
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
       entities: [join(__dirname, '**', '*.entity.{ts,js}')],
-      synchronize: process.env.NODE_ENV !== 'production',
+      synchronize: true, // Enable for development, disable in production
+      migrationsRun: true, // Automatically run migrations  
       logging: false
     }),
     LoginModule,
