@@ -2393,6 +2393,7 @@ caniuse-lite@^1.0.30001716:
     carwashapi "file:"
     class-transformer "^0.5.1"
     class-validator "^0.14.2"
+    exceljs "^4.4.0"
     mysql2 "^3.14.1"
     passport "^0.7.0"
     passport-jwt "^4.0.1"

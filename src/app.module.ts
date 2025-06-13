@@ -12,6 +12,7 @@ import { ServiciosModule } from './dashboard/servicios/servicios.module';
 import { EmpresasService } from './dashboard/empresas/empresas.service';
 import { SucursalesModule } from './dashboard/sucursales/sucursales.module';
 import { VentaModule } from './dashboard/venta/venta.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { VentaModule } from './dashboard/venta/venta.module';
     EmpresasModule,
     ServiciosModule,
     SucursalesModule,
-    VentaModule
+    VentaModule,
+    DashboardModule
   ],
   controllers: [AppController],
   providers: [AppService],
