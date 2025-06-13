@@ -1,8 +1,5 @@
-# Use Node.js 18 Alpine
-FROM node:18-alpine
-
-# Install Python and build tools for native dependencies
-RUN apk add --no-cache python3 make g++
+# Use Node.js 18 LTS
+FROM node:18
 
 # Set working directory
 WORKDIR /app
@@ -10,17 +7,14 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Clean npm cache and install dependencies
-RUN npm cache clean --force && npm install
+# Install dependencies
+RUN npm install
 
 # Copy source code
 COPY . .
 
 # Build the application
 RUN npm run build
-
-# Remove devDependencies after build
-RUN npm prune --production
 
 # Expose port
 EXPOSE 3000
