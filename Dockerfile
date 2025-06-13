@@ -1,14 +1,17 @@
 # Use Node.js 18 Alpine
 FROM node:18-alpine
 
+# Install Python and build tools for native dependencies
+RUN apk add --no-cache python3 make g++
+
 # Set working directory
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies (including devDependencies for build)
-RUN npm ci
+# Clean npm cache and install dependencies
+RUN npm cache clean --force && npm install
 
 # Copy source code
 COPY . .
