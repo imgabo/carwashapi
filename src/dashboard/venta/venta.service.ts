@@ -45,6 +45,7 @@ export class VentaService {
       sucursal,
       servicios,
       serviciosPersonalizados,
+      patente: createVentaDto.patente,
       pagado: createVentaDto.pagado,
       total,
     });
@@ -88,6 +89,10 @@ export class VentaService {
       venta.serviciosPersonalizados = updateVentaDto.serviciosPersonalizados;
     }
 
+    if (updateVentaDto.patente !== undefined) {
+      venta.patente = updateVentaDto.patente;
+    }
+
     if (typeof updateVentaDto.pagado === 'boolean') {
       venta.pagado = updateVentaDto.pagado;
     }
@@ -108,7 +113,6 @@ export class VentaService {
   }
 
   async exportarExcel(fechaInicio: string, fechaFin: string): Promise<Buffer> {
-
     const inicio = new Date(fechaInicio);
     const fin = new Date(fechaFin);
     fin.setHours(23, 59, 59, 999);
@@ -116,14 +120,16 @@ export class VentaService {
       where: {
         createdAt: Between(inicio, fin),
       },
-      relations: ['cliente', 'sucursal', 'servicios'],
+      relations: ['cliente', 'cliente.empresa', 'sucursal', 'servicios'],
       order: { createdAt: 'ASC' },
     });
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Ventas');
     worksheet.columns = [
       { header: 'Cliente', key: 'cliente', width: 20 },
+      { header: 'Empresa', key: 'empresa', width: 25 },
       { header: 'Sucursal', key: 'sucursal', width: 20 },
+      { header: 'Patente', key: 'patente', width: 10 },
       { header: 'Servicios', key: 'servicios', width: 30 },
       { header: 'Servicios Personalizados', key: 'serviciosPersonalizados', width: 40 },
       { header: 'Total', key: 'total', width: 12 },
@@ -151,10 +157,14 @@ export class VentaService {
     ventas.forEach((venta, idx) => {
       const row = worksheet.addRow({
         cliente: venta.cliente ? `${venta.cliente.name} ${venta.cliente.apellido}` : '',
+        empresa: venta.cliente?.empresa ? venta.cliente.empresa.name : '',
         sucursal: venta.sucursal ? venta.sucursal.nombre : '',
-        servicios: venta.servicios ? venta.servicios.map(s => s.nombre).join(', ') : '',
+        patente: venta.patente || '',
+        servicios: venta.servicios ? venta.servicios.map((s) => s.nombre).join(', ') : '',
         serviciosPersonalizados: venta.serviciosPersonalizados && venta.serviciosPersonalizados.length > 0
-          ? venta.serviciosPersonalizados.map(sp => `${sp.nombre} ($${sp.precio}): ${sp.descripcion}`).join(' | ')
+          ? venta.serviciosPersonalizados
+              .map((sp) => `${sp.nombre} ($${sp.precio}): ${sp.descripcion}`)
+              .join(' | ')
           : '',
         total: venta.total,
         pagado: venta.pagado ? 'Sí' : 'No',
@@ -190,7 +200,9 @@ export class VentaService {
     // Fila de totales pagado
     const rowPagado = worksheet.addRow({
       cliente: '',
+      empresa: '',
       sucursal: '',
+      patente: '',
       servicios: '',
       serviciosPersonalizados: '',
       total: 'Total Pagado:',
@@ -200,7 +212,9 @@ export class VentaService {
     // Fila de totales no pagado
     const rowNoPagado = worksheet.addRow({
       cliente: '',
+      empresa: '',
       sucursal: '',
+      patente: '',
       servicios: '',
       serviciosPersonalizados: '',
       total: 'Total No Pagado:',
@@ -210,7 +224,9 @@ export class VentaService {
     // Fila de gran total
     const rowGranTotal = worksheet.addRow({
       cliente: '',
+      empresa: '',
       sucursal: '',
+      patente: '',
       servicios: '',
       serviciosPersonalizados: '',
       total: 'Gran Total:',

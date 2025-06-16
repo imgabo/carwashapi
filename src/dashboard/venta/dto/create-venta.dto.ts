@@ -28,6 +28,10 @@ export class CreateVentaDto {
   @IsOptional()
   serviciosPersonalizados?: ServicioPersonalizadoDto[];
 
+  @IsString()
+  @IsOptional()
+  patente?: string;
+
   @IsBoolean()
   pagado: boolean;
 

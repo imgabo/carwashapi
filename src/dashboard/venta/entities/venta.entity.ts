@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Cliente } from 'src/clientes/entities/cliente.entity';
 import { Sucursal } from 'src/dashboard/sucursales/entities/sucursales.entity';
 import { Servicio } from 'src/dashboard/servicios/entities/servicios.entity';
@@ -19,7 +28,14 @@ export class Venta {
   servicios: Servicio[];
 
   @Column('json', { nullable: true })
-  serviciosPersonalizados: { nombre: string; precio: number; descripcion: string }[];
+  serviciosPersonalizados: {
+    nombre: string;
+    precio: number;
+    descripcion: string;
+  }[];
+
+  @Column({ length: 10, nullable: true })
+  patente: string;
 
   @Column('decimal', { precision: 10, scale: 2, default: 0 })
   total: number;
