@@ -4,6 +4,7 @@ import { Cliente } from './entities/cliente.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Empresa } from '../dashboard/empresas/entities/empresa.entity';
+import { UpdateClienteDto } from './dto/update-cliente.dto';
 
 @Injectable()
 export class ClientesService {
@@ -75,6 +76,33 @@ export class ClientesService {
             throw new BadRequestException('Error al eliminar el cliente', error);
         }
 
-    }   
-    
+    }
+
+    async update(id: number, updateClienteDto: UpdateClienteDto): Promise<Cliente> {
+        const cliente = await this.clientesRepository.findOne({ where: { id }, relations: ['empresa'] });
+        if (!cliente) {
+            throw new NotFoundException('Cliente no encontrado');
+        }
+
+        let empresa: Empresa | null = null;
+        if (updateClienteDto.empresaId) {
+            empresa = await this.empresasRepository.findOne({ where: { id: updateClienteDto.empresaId } });
+            if (!empresa) {
+                throw new NotFoundException('Empresa no encontrada');
+            }
+        } else if (updateClienteDto.empresaNombre) {
+            empresa = this.empresasRepository.create({ name: updateClienteDto.empresaNombre });
+            empresa = await this.empresasRepository.save(empresa);
+        }
+
+        if (empresa) {
+            cliente.empresa = empresa;
+        }
+
+        if (updateClienteDto.name !== undefined) cliente.name = updateClienteDto.name;
+        if (updateClienteDto.apellido !== undefined) cliente.apellido = updateClienteDto.apellido;
+        if (updateClienteDto.telefono !== undefined) cliente.telefono = updateClienteDto.telefono;
+
+        return this.clientesRepository.save(cliente);
+    }
 }
