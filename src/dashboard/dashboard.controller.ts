@@ -1,13 +1,14 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
+import { TimePeriod } from './enums/time-period.enum';
 
 @Controller('dashboard')
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
   @Get('ventas-totales')
-  getVentasTotales() {
-    return this.dashboardService.getVentasTotales();
+  getVentasTotales(@Query('period') period: TimePeriod = TimePeriod.CURRENT_MONTH) {
+    return this.dashboardService.getVentasTotales(period);
   }
 
   @Get('clientes-registrados')
@@ -26,17 +27,25 @@ export class DashboardController {
   }
 
   @Get('ventas-recientes')
-  getVentasRecientes(@Query('limit') limit: number = 3) {
-    return this.dashboardService.getVentasRecientes(limit);
+  getVentasRecientes(
+    @Query('limit') limit: number = 3,
+    @Query('period') period: TimePeriod = TimePeriod.CURRENT_MONTH
+  ) {
+    return this.dashboardService.getVentasRecientes(limit, period);
   }
 
   @Get('servicios-populares')
-  getServiciosPopulares(@Query('limit') limit: number = 3) {
-    return this.dashboardService.getServiciosPopulares(limit);
+  getServiciosPopulares(
+    @Query('limit') limit: number = 3,
+    @Query('period') period: TimePeriod = TimePeriod.CURRENT_MONTH
+  ) {
+    return this.dashboardService.getServiciosPopulares(limit, period);
   }
 
   @Get('rendimiento-sucursal')
-  getRendimientoSucursal() {
-    return this.dashboardService.getRendimientoSucursal();
+  getRendimientoSucursal(
+    @Query('period') period: TimePeriod = TimePeriod.CURRENT_MONTH
+  ) {
+    return this.dashboardService.getRendimientoSucursal(period);
   }
-} 
+}

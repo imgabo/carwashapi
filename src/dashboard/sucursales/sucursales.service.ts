@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException       } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Sucursal } from './entities/sucursales.entity';
@@ -7,8 +7,6 @@ import { UpdateSucursalDto } from './dto/update-sucursal.dto';
 
 @Injectable()
 export class SucursalesService {
-
-
     constructor(
         @InjectRepository(Sucursal)
         private readonly sucursalesRepository: Repository<Sucursal>,
@@ -22,21 +20,22 @@ export class SucursalesService {
         return this.sucursalesRepository.save(sucursal);
     }
 
-    async update(id: number, sucursal: UpdateSucursalDto): Promise<Sucursal> {
-        const sucursalExistente = await this.sucursalesRepository.findOne({ where: { id } });
-        if (!sucursalExistente) {
+    async update(id: number, updateSucursalDto: UpdateSucursalDto): Promise<Sucursal> {
+        const sucursal = await this.sucursalesRepository.findOne({ where: { id } });
+        if (!sucursal) {
             throw new NotFoundException('Sucursal no encontrada');
         }
+
+        // Actualizar solo los campos proporcionados
+        Object.assign(sucursal, updateSucursalDto);
         
-        await this.sucursalesRepository.update(id, sucursal);
-        const sucursalActualizada = await this.sucursalesRepository.findOne({ where: { id } });
-        if (!sucursalActualizada) {
-            throw new NotFoundException('Error al actualizar la sucursal');
-        }
-        return sucursalActualizada;
+        return this.sucursalesRepository.save(sucursal);
     }
 
     async delete(id: number): Promise<void> {
-        await this.sucursalesRepository.delete(id);
+        const result = await this.sucursalesRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException('Sucursal no encontrada');
+        }
     }
 }

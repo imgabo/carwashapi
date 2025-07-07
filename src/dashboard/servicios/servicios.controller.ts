@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Put, Param, Delete, BadRequestException } 
 import { ServiciosService } from './servicios.service';
 import { Servicio } from './entities/servicios.entity';
 import { CreateServicioDto } from './dto/create-servicio.dto';
+import { UpdateServicioDto } from './dto/update-servicio.dto';
 
 @Controller('servicios')
   export class ServiciosController {
@@ -22,8 +23,8 @@ import { CreateServicioDto } from './dto/create-servicio.dto';
     }
 
     @Put(':id')
-    async update(@Param('id') id: string, @Body() servicio: Servicio): Promise<Servicio> {
-        return this.serviciosService.update(parseInt(id), servicio);
+    async update(@Param('id') id: string, @Body() updateServicioDto: UpdateServicioDto): Promise<Servicio> {
+        return this.serviciosService.update(parseInt(id), updateServicioDto);
     }
     
 

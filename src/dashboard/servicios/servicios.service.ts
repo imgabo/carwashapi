@@ -3,6 +3,8 @@ import { Servicio } from './entities/servicios.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateServicioDto } from './dto/create-servicio.dto';
+import { UpdateServicioDto } from './dto/update-servicio.dto';
+
 @Injectable()
 export class ServiciosService {
 
@@ -19,16 +21,23 @@ export class ServiciosService {
         return this.servicioRepository.save(servicio);
     } 
 
-    async update(id: number, servicio: Servicio): Promise<Servicio> {
-        const servicioExistente = await this.servicioRepository.findOne({ where: { id } });
-        if (!servicioExistente) {
+    async update(id: number, updateServicioDto: UpdateServicioDto): Promise<Servicio> {
+        const servicio = await this.servicioRepository.findOne({ where: { id } });
+        if (!servicio) {
             throw new NotFoundException('Servicio no encontrado');
         }
-        return this.servicioRepository.save({ ...servicioExistente, ...servicio });
+
+        // Actualizar solo los campos proporcionados
+        Object.assign(servicio, updateServicioDto);
+        
+        return this.servicioRepository.save(servicio);
     }       
 
     async delete(id: number): Promise<void> {
-        await this.servicioRepository.delete(id);
+        const result = await this.servicioRepository.delete(id);
+        if (result.affected === 0) {
+            throw new NotFoundException('Servicio no encontrado');
+        }
     }
     
 }
