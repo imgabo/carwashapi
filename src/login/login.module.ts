@@ -3,13 +3,14 @@ import { LoginService } from './login.service';
 import { LoginController } from './login.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { RefreshToken } from './entities/refresh-token.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, RefreshToken]),
     ConfigModule,
     PassportModule,
     JwtModule.registerAsync({
