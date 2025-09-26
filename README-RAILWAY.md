@@ -15,7 +15,7 @@ API REST para sistema de gestión de lavado de autos desarrollada con NestJS y T
 
 Railway detectará automáticamente que necesitas MySQL. Agrega el servicio MySQL:
 
-1. En tu proyecto de Railway, click en "New Service"
+1. En tu proyecto de Railway, click en   "New Service"
 2. Selecciona "Database" → "MySQL"
 3. Railway creará automáticamente las variables de entorno
 
